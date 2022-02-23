@@ -1,0 +1,39 @@
+variables:
+    EOS_PATH: "/eos/user/e/ecalgit/www/ecalphisym/"
+    EOS_MGM_URL : "root://eoshome-e.cern.ch"
+    CI_OUTPUT_DIR: "public"
+
+stages:
+    - build
+    - docs-deploy 
+
+# Build the package
+python-build:
+    stage: build
+    image: gitlab-registry.cern.ch/ci-tools/ci-worker:cc7
+    script:
+    - export LANG="en_US.utf-8"
+    - yum -y install python3 pip3 locmap libcurl-devel python3-devel
+    - pip3 install .
+    - pip3 install sphinx sphinx_rtd_theme sphinx-argparse sphinx-autodoc-typehints
+    - mkdir "$CI_OUTPUT_DIR" 
+    - cd docs
+    - make html SPHINXOPTS=-vvv
+    - cd -
+    - mv docs/build/html/* "$CI_OUTPUT_DIR"
+    artifacts:
+        paths:
+        # Upload as an artifact the folder where the output has been generated
+        # This will attach to the job the output. It can be browsed or downloaded
+        - "$CI_OUTPUT_DIR"
+    
+# Deploy to an EOS folder the contents generated
+deployment:
+    stage: docs-deploy
+      # Only when the master branch is pushed
+    only:
+        - master
+    # Custom docker image providing the needed tools to deploy in EOS
+    image: gitlab-registry.cern.ch/ci-tools/ci-web-deployer:latest
+    script:
+        - deploy-eos
