@@ -17,15 +17,20 @@ The package can be installed through pip:
 
 .. code-block:: bash
 
-   pip3 install 'https://github.com/simonepigazzini/ecalphisym.git'
+   pip install 'https://github.com/simonepigazzini/ecalphisym.git'
 
 EcalPhiSym NanoAOD schema
 =========================
 .. autoclass:: ecalphisym.EcalPhiSymSchema
    :members:
+
+ECAL Info
+=========
+.. autoclass:: ecalphisym.info.Info
+   :members:      
             
 ECAL RecHit
-===========git add
+===========
 .. autoclass:: ecalphisym.rechit.RecHit
    :members:
 
@@ -38,11 +43,6 @@ ECAL RecHitEE
 =============
 .. autoclass:: ecalphisym.rechit.RecHitEE
    :members:
-
-ECAL Info
-=========
-.. autoclass:: ecalphisym.info.Info
-   :members:      
       
 Indices and tables
 ==================

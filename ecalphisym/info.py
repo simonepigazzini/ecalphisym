@@ -40,5 +40,25 @@ class Info:
                            ak.flatten(self.maxmisee),
                            int(ak.mean(self.nmis))+1,
                            axis=-1)
+
+    def sum(self, axis: int=0):
+        """
+        Sum an array of Info
+
+        :param axis: axis along which the sum is performed.
+        """
+        data = {
+            "hitseb": ak.sum(self.hitseb, axis=axis),
+            "hitsee": ak.sum(self.hitsee, axis=axis),
+            "nevents": ak.sum(self.nevents, axis=axis),
+            "nlumis": ak.sum(self.nlumis, axis=axis),
+            "fill": np.unique(self.fill),
+            "reclumi": ak.sum(self.reclumi, axis=axis),
+            "delivlumi": ak.sum(self.delivlumi, axis=axis)
+        }
+        return ak.zip(
+            data,
+            with_name="Info"
+        )
     
 __all__ = ["Info"]
