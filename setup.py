@@ -16,7 +16,7 @@ setup(name='ecalphisym',
           "Programming Language :: Python :: 3",
           "Operating System :: Linux",
       ],
-      python_requires=">=3.10",
+      python_requires=">=3.9",
       install_requires=[
           'coffea>=0.7.12'
       ]

@@ -10,7 +10,7 @@ stages:
 # Build the package
 python-build:
     stage: build
-    image: gitlab-registry.cern.ch/ci-tools/ci-worker:cc7
+    image: gitlab-registry.cern.ch/linuxsupport/cs9-base
     script:
     - export LANG="en_US.utf-8"
     - yum -y install python3 pip3 locmap libcurl-devel python3-devel
