@@ -1,6 +1,6 @@
 variables:
-    EOS_PATH: "/eos/user/e/ecalgit/www/ecalphisym/"
-    EOS_MGM_URL : "root://eoshome-e.cern.ch"
+    EOS_PATH: "/eos/user/s/spigazzi/www/docs/ecalphisym/"
+    EOS_MGM_URL : "root://eoshome-s.cern.ch"
     CI_OUTPUT_DIR: "public"
 
 stages:
