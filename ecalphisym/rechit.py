@@ -15,7 +15,7 @@ class RecHit:
     It provide the `sumet` and `sumlc` measurements as well as the squared 
     sums `sumet2` `sumlc2` that are used to compute the statistical uncertainty 
     on the measured values. The channel `status`, `id` and number of recorded hits
-    `nhits` are also saved. `sumet_mis` is an array that holds the sum Et values after
+    `nhits` are also saved. `sumet_v` is an array that holds the sum Et values after
     applying a known miscalibration.
     """
 
@@ -27,37 +27,42 @@ class RecHit:
         # get miscalibrated sumEt values
         n_mis = len([m for m in dir(self) if 'sumet_m' in m])
         fields = [self['sumet_m'+str(n_mis-i)] for i in range(n_mis)]+[self['sumet']]+[self['sumet_p'+str(i+1)] for i in range(n_mis)]
-        return ak.Array(np.transpose(fields, axes=(1, 2, 0)))/self.sumet-1
- 
+        # transpose only the last two dimensions to reconstruct the proper sumet_v array
+        ax = [-2, -1]
+        ax.extend([d for d in range(np.zeros_like(fields).ndim-2)])
+        return ak.Array(np.transpose(fields, axes=ax))/self.sumet-1
+    
     @property
     def sumet_err(self):
         """
         The statistical uncertainty on the sum Et value
         """
-        return np.sqrt(self.sumet2/self.nhits - self.sumet/self.nhits*self.suamet/self.nhits,
+        return np.sqrt(self.sumet2/self.nhits - self.sumet/self.nhits*self.sumet/self.nhits,
                        where=self.nhits>0, out=ak.to_np(ak.zeros_like(self.sumet2)))
 
     @property
     def sumlc_err(self):
         """The statistical uncertainty on the sum of the LC value"""
-        return np.sqrt(self.sumlc2/self.nhits - self.sumlc/self.nhits*self.suamlc/self.nhits,
+        return np.sqrt(self.sumlc2/self.nhits - self.sumlc/self.nhits*self.sumlc/self.nhits,
                        where=self.nhits>0, out=ak.to_np(ak.zeros_like(self.sumlc2)))
 
-    def sum(self, axis: int=0):
+    def sum(self, axis: int=0, with_name: str='RecHit'):
         """
         Sum an array of RecHits
 
         :param axis: axis along which the sum is performed.
+        :param with_name: summer RecHit collection name.
         """
         data = { f : ak.sum(self[f], axis=axis) for f in dir(self) if 'sumet_m' in f or 'sumet_p' in f }
         data.update({ "nhits": ak.sum(self.nhits, axis=axis),
                       "sumet": ak.sum(self.sumet, axis=axis),
                       "sumet2": ak.sum(self.sumet2, axis=axis),
                       "sumlc": ak.sum(self.sumlc, axis=axis),
-                      "sumlc2": ak.sum(self.sumlc2, axis=axis) })
+                      "sumlc2": ak.sum(self.sumlc2, axis=axis),
+                      "status": ak.max(self.status, axis=axis) })
         return ak.zip(
             data,
-            with_name="RecHit"
+            with_name=with_name
         )
 
 @ak.mixin_class(behavior)
@@ -67,6 +72,15 @@ class RecHitEB(RecHit):
     the ieta and iphi methods.
     """
 
+    def sum(self, axis: int=0):
+        """
+        Sum an array of RecHitEB
+        
+        :param axis: axis along which the sum is performed.
+        """
+
+        return super().sum(axis=axis, with_name='RecHitEB')
+        
     def zside(self):
         """
         Barrel eta side
@@ -95,6 +109,15 @@ class RecHitEE(RecHit):
     the ix, iy and iz methods.
     """
 
+    def sum(self, axis: int=0):
+        """
+        Sum an array of RecHitEE
+        
+        :param axis: axis along which the sum is performed.
+        """
+
+        return super().sum(axis=axis, with_name='RecHitEE')
+    
     @property
     def iz(self):
         """

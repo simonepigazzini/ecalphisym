@@ -43,22 +43,29 @@ class Info:
 
     def sum(self, axis: int=0):
         """
-        Sum an array of Info
+        Sum an array of Info. The summing operation assumes that the miscalibration
+        values are the same across the analyzed dataset. Further more if summing across
+        fills the sum fill field is filled with the number of the lowest fill.
 
         :param axis: axis along which the sum is performed.
         """
         data = {
-            "hitseb": ak.sum(self.hitseb, axis=axis),
-            "hitsee": ak.sum(self.hitsee, axis=axis),
-            "nevents": ak.sum(self.nevents, axis=axis),
-            "nlumis": ak.sum(self.nlumis, axis=axis),
-            "fill": np.unique(self.fill),
-            "reclumi": ak.sum(self.reclumi, axis=axis),
-            "delivlumi": ak.sum(self.delivlumi, axis=axis)
+            'maxmiseb' : ak.mean(self.maxmiseb, axis=axis),
+            'maxmisee' : ak.mean(self.maxmisee, axis=axis),
+            'minmiseb': ak.mean(self.minmiseb, axis=axis),
+            'minmisee': ak.mean(self.minmisee, axis=axis),
+            'nmis' : ak.mean(self.nmis, axis=axis),
+            'hitseb': ak.sum(self.hitseb, axis=axis),
+            'hitsee': ak.sum(self.hitsee, axis=axis),
+            'nevents': ak.sum(self.nevents, axis=axis),
+            'nlumis': ak.sum(self.nlumis, axis=axis),
+            'fill': ak.min(self.fill, axis=axis),
+            'reclumi': ak.sum(self.reclumi, axis=axis),
+            'delivlumi': ak.sum(self.delivlumi, axis=axis)
         }
         return ak.zip(
             data,
-            with_name="Info"
+            with_name='Info'
         )
     
-__all__ = ["Info"]
+__all__ = ['Info']
