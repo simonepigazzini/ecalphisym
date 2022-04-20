@@ -54,12 +54,13 @@ class RecHit:
         :param with_name: summer RecHit collection name.
         """
         data = { f : ak.sum(self[f], axis=axis) for f in dir(self) if 'sumet_m' in f or 'sumet_p' in f }
-        data.update({ "nhits": ak.sum(self.nhits, axis=axis),
-                      "sumet": ak.sum(self.sumet, axis=axis),
-                      "sumet2": ak.sum(self.sumet2, axis=axis),
-                      "sumlc": ak.sum(self.sumlc, axis=axis),
-                      "sumlc2": ak.sum(self.sumlc2, axis=axis),
-                      "status": ak.max(self.status, axis=axis) })
+        data.update({ "id" : ak.min(self.id, axis=axis),
+                      "nhits" : ak.sum(self.nhits, axis=axis),
+                      "sumet" : ak.sum(self.sumet, axis=axis),
+                      "sumet2" : ak.sum(self.sumet2, axis=axis),
+                      "sumlc" : ak.sum(self.sumlc, axis=axis),
+                      "sumlc2" : ak.sum(self.sumlc2, axis=axis),
+                      "status" : ak.max(self.status, axis=axis) })
         return ak.zip(
             data,
             with_name=with_name
