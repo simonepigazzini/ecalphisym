@@ -68,19 +68,18 @@ class RecHit:
 
     def add(self, other, with_name: str='RecHit'):
         """
-        Sum an array of RecHits
+        Add two arrays of RecHits, not inplace.
 
-        :param axis: axis along which the sum is performed.
-        :param with_name: summer RecHit collection name.
+        :param other: another RecHit.
         """
         data = { f : self[f]+other[f] for f in dir(self) if 'sumet_m' in f or 'sumet_p' in f }
-        data.update({ "id" : self.id,
-                      "nhits" : self.nhits+other.nhits,
-                      "sumet" : self.sumet + other.sumet,
-                      "sumet2" : self.sumet2 + other.sumet2,
-                      "sumlc" : self.sumlc + other.sumlc,
-                      "sumlc2" : self.sumlc2 + other.sumlc2,
-                      "status" : self.status })
+        data.update({ "id": other.id,
+                      "nhits": self.nhits + other.nhits,
+                      "sumet": self.sumet + other.sumet,
+                      "sumet2": self.sumet2 + other.sumet2,
+                      "sumlc": self.sumlc + other.sumlc,
+                      "sumlc2": self.sumlc2 + other.sumlc2,
+                      "status": other.status })
         return ak.zip(
             data,
             with_name=with_name

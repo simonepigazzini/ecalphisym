@@ -67,5 +67,26 @@ class Info:
             data,
             with_name='Info'
         )
+
+    def add(self, other):
+        """Add a new info to existing one, not in place"""
+        data = {
+            'maxmiseb': other.maxmiseb,
+            'maxmisee': other.maxmisee,
+            'minmiseb': other.minmiseb,
+            'minmisee': other.minmisee,
+            'nmis': other.nmis,
+            'hitseb': self.hitseb + other.hitseb,
+            'hitsee': self.hitsee + other.hitsee,
+            'nevents': self.nevents + other.nevents,
+            'nlumis': self.nlumis + other.nlumis,
+            'fill': ak.min(other.fill),
+            'reclumi': self.reclumi + other.reclumi,
+            'delivlumi': self.delivlumi + other.delivlumi
+        }
+        return ak.zip(
+            data,
+            with_name='Info'
+        )
     
 __all__ = ['Info']
