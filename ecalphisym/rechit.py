@@ -66,6 +66,26 @@ class RecHit:
             with_name=with_name
         )
 
+    def add(self, other, with_name: str='RecHit'):
+        """
+        Sum an array of RecHits
+
+        :param axis: axis along which the sum is performed.
+        :param with_name: summer RecHit collection name.
+        """
+        data = { f : self[f]+other[f] for f in dir(self) if 'sumet_m' in f or 'sumet_p' in f }
+        data.update({ "id" : self.id,
+                      "nhits" : self.nhits+other.nhits,
+                      "sumet" : self.sumet + other.sumet,
+                      "sumet2" : self.sumet2 + other.sumet2,
+                      "sumlc" : self.sumlc + other.sumlc,
+                      "sumlc2" : self.sumlc2 + other.sumlc2,
+                      "status" : self.status })
+        return ak.zip(
+            data,
+            with_name=with_name
+        )
+    
 @ak.mixin_class(behavior)
 class RecHitEB(RecHit):
     """
@@ -81,7 +101,10 @@ class RecHitEB(RecHit):
         """
 
         return super().sum(axis=axis, with_name='RecHitEB')
-        
+
+    def add(self, other):
+        return super().add(other, with_name='RecHitEB')
+    
     def zside(self):
         """
         Barrel eta side
@@ -118,6 +141,9 @@ class RecHitEE(RecHit):
         """
 
         return super().sum(axis=axis, with_name='RecHitEE')
+
+    def add(self, other):
+        return super().add(other, with_name='RecHitEE')
     
     @property
     def iz(self):
