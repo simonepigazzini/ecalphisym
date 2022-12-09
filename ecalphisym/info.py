@@ -23,8 +23,8 @@ class Info:
         """
         # linspace requires an integer singleton
         # while nmis is an array (one int per Run/LuminosityBlock        
-        return np.linspace(ak.broadcast_arrays(self.minmiseb, np.ones(61200))[0]-1,
-                           ak.broadcast_arrays(self.maxmiseb, np.ones(61200))[0]-1,
+        return np.linspace(ak.broadcast_arrays(self.minmiseb.to_numpy(), np.ones(61200))[0]-1,
+                           ak.broadcast_arrays(self.maxmiseb.to_numpy(), np.ones(61200))[0]-1,
                            int(ak.mean(self.nmis))+1,
                            axis=-1)
     
